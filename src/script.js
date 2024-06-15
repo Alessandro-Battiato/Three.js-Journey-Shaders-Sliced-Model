@@ -3,7 +3,10 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import GUI from "lil-gui";
+import slicedVertexShader from "./shaders/sliced/vertex.glsl";
+import slicedFragmentShader from "./shaders/sliced/fragment.glsl";
 
 /**
  * Base
@@ -47,15 +50,34 @@ const material = new THREE.MeshStandardMaterial({
     color: "#858080",
 });
 
+const slicedMaterial = new CustomShaderMaterial({
+    // CSM
+    baseMaterial: THREE.MeshStandardMaterial,
+    silent: true,
+    vertexShader: slicedVertexShader,
+    fragmentShader: slicedFragmentShader,
+
+    // MeshStandardMaterial
+    metalness: 0.5,
+    roughness: 0.25,
+    envMapIntensity: 0.5,
+    color: "#858080",
+});
+
 // Model
 let model = null;
 gltfLoader.load("./gears.glb", (gltf) => {
     model = gltf.scene;
 
     model.traverse((child) => {
+        // Check if it's a mesh and not anything else like camera ecc.
         if (child.isMesh) {
-            // Check if it's a mesh and not anything else like camera ecc.
-            child.material = material;
+            if (child.name === "outerHull") {
+                // We want to apply our custom shaders ONLY to the outerHull, while the other parts of the model won't be changed
+                child.material = slicedMaterial;
+            } else {
+                child.material = material;
+            }
             child.castShadow = true;
             child.receiveShadow = true;
         }
