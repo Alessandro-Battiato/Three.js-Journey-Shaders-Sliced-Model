@@ -51,6 +51,14 @@ const material = new THREE.MeshStandardMaterial({
 let model = null;
 gltfLoader.load("./gears.glb", (gltf) => {
     model = gltf.scene;
+
+    model.traverse((child) => {
+        if (child.isMesh) {
+            // Check if it's a mesh and not anything else like camera ecc.
+            child.material = material;
+        }
+    });
+
     scene.add(model);
 });
 
