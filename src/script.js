@@ -48,8 +48,10 @@ const material = new THREE.MeshStandardMaterial({
 });
 
 // Model
+let model = null;
 gltfLoader.load("./gears.glb", (gltf) => {
-    scene.add(gltf.scene);
+    model = gltf.scene;
+    scene.add(model);
 });
 
 /**
@@ -144,6 +146,11 @@ const clock = new THREE.Clock();
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime();
+
+    if (model) {
+        // Update model
+        model.rotation.y = elapsedTime * 0.1;
+    }
 
     // Update controls
     controls.update();
