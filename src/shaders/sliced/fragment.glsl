@@ -15,6 +15,7 @@ void main() {
         // The sliced portion occurs only when the angle satisfies the said conditions, and if it does, we discard all of the pixels so that they are not drawn
         discard;
     }
+    float csm_Slice;
 
-    csm_FragColor = vec4(vec3(angle), 1.0);
+    // csm_FragColor = vec4(vec3(angle), 1.0);
 }

@@ -47,6 +47,17 @@ const uniforms = {
     uSliceArc: new THREE.Uniform(1.25),
 };
 
+const patchMap = {
+    csm_Slice: {
+        "#include <colorspace_fragment>": `
+            #include <colorspace_fragment>
+
+            if(!gl_FrontFacing)
+                gl_FragColor = vec4(0.75, 0.15, 0.3, 1.0);
+        `, // it MUST have the same name in order to work
+    },
+};
+
 gui.add(uniforms.uSliceStart, "value", -Math.PI, Math.PI, 0.001).name(
     "uSliceStart"
 );
@@ -67,6 +78,7 @@ const slicedMaterial = new CustomShaderMaterial({
     vertexShader: slicedVertexShader,
     fragmentShader: slicedFragmentShader,
     uniforms,
+    patchMap,
 
     // MeshStandardMaterial
     metalness: 0.5,
