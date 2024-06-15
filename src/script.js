@@ -56,6 +56,8 @@ gltfLoader.load("./gears.glb", (gltf) => {
         if (child.isMesh) {
             // Check if it's a mesh and not anything else like camera ecc.
             child.material = material;
+            child.castShadow = true;
+            child.receiveShadow = true;
         }
     });
 
